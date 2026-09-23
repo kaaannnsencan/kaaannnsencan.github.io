@@ -73,10 +73,13 @@ const compositeFrag = /* glsl */ `
 export class PixelRenderer {
   readonly renderer: THREE.WebGLRenderer
   readonly canvas: HTMLCanvasElement
-  /** screen pixels per low-res texel */
+  /** device pixels per low-res texel */
   pixelSize = 3
   width = 1
   height = 1
+  /** canvas size in CSS pixels */
+  cssWidth = 1
+  cssHeight = 1
   /** Re-render the shadow map every N frames (2 on phones). */
   shadowEvery = 1
   private frameNo = 0
@@ -135,19 +138,24 @@ export class PixelRenderer {
     this.quadScene.add(quad)
   }
 
-  /** `pixelSize` = screen pixels per low-res texel. */
-  resize(viewportW: number, viewportH: number, pixelSize: number) {
+  /**
+   * `pixelSize` = DEVICE pixels per low-res texel. Working in device pixels lets
+   * high-density phone screens show more of the world while staying pixel-sharp.
+   */
+  resize(viewportW: number, viewportH: number, pixelSize: number, dpr = 1) {
     this.pixelSize = Math.max(2, Math.round(pixelSize))
     // even texel counts keep the frustum edges on the world texel grid (see snapQuad),
     // and the canvas is an exact multiple of the texel size (it may overhang the viewport by a few px)
     const even = (n: number) => Math.ceil(n / 2) * 2
-    this.width = even(viewportW / this.pixelSize)
-    this.height = even(viewportH / this.pixelSize)
-    const cssW = this.width * this.pixelSize
-    const cssH = this.height * this.pixelSize
-    this.renderer.setSize(cssW, cssH, false)
-    this.canvas.style.width = `${cssW}px`
-    this.canvas.style.height = `${cssH}px`
+    this.width = even((viewportW * dpr) / this.pixelSize)
+    this.height = even((viewportH * dpr) / this.pixelSize)
+    const devW = this.width * this.pixelSize
+    const devH = this.height * this.pixelSize
+    this.cssWidth = devW / dpr
+    this.cssHeight = devH / dpr
+    this.renderer.setSize(devW, devH, false)
+    this.canvas.style.width = `${this.cssWidth}px`
+    this.canvas.style.height = `${this.cssHeight}px`
     this.colorTarget.setSize(this.width, this.height)
     this.normalTarget.setSize(this.width, this.height)
     this.composite.uniforms.resolution.value.set(this.width, this.height, 1 / this.width, 1 / this.height)

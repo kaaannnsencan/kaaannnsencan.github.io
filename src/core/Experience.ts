@@ -182,11 +182,15 @@ export class Experience {
   resize() {
     const w = window.innerWidth
     const h = window.innerHeight
-    // Portrait phones are sized by width (≈13 world units across), everything
-    // else by height (≈22 units, 17 on small landscape screens). Slow devices
-    // get bigger texels, i.e. fewer pixels to shade.
-    const base = h > w ? w / (TEXELS_PER_UNIT * 13) : h / (TEXELS_PER_UNIT * (h < 600 ? 13 : w < 900 ? 17 : 22))
-    this.renderer.resize(w, h, Math.max(2, Math.round(base)) + this.qualityBias)
+    const dpr = Math.min(3, window.devicePixelRatio || 1)
+    // How much of the world fits on screen: portrait phones are sized by width
+    // (≈18 units across), everything else by height (≈19 units on small screens,
+    // 22 on desktops). Computed in device pixels so dense phone screens aren't
+    // stuck zoomed in. Slow devices get bigger texels (fewer pixels to shade).
+    const units = h > w ? 18 : h < 600 || w < 900 ? 19 : 22
+    const base = ((h > w ? w : h) * dpr) / (TEXELS_PER_UNIT * units)
+    const px = Math.max(2, Math.round(base))
+    this.renderer.resize(w, h, px + Math.round(this.qualityBias * Math.max(1, px / 3)), dpr)
     this.rig.resize(this.renderer.width, this.renderer.height, TEXELS_PER_UNIT)
   }
 
@@ -287,8 +291,8 @@ export class Experience {
       this.tmp.y += this.near.height ?? 2
       this.tmp.project(this.rig.camera)
       // project onto the canvas' real CSS size (it can overhang the viewport by a few px)
-      const cw = this.renderer.width * this.renderer.pixelSize
-      const ch = this.renderer.height * this.renderer.pixelSize
+      const cw = this.renderer.cssWidth
+      const ch = this.renderer.cssHeight
       this.ui.setPrompt({ x: (this.tmp.x * 0.5 + 0.5) * cw, y: (-this.tmp.y * 0.5 + 0.5) * ch }, this.near.label())
     } else this.ui.setPrompt(null, this.vehicle ? i18n.t('dismount') : undefined)
 
