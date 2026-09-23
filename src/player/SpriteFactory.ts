@@ -47,7 +47,7 @@ export const KAAN: CharacterPalette = {
   collar: '#2a2830',
   sleeve: '#b7c0c7',
   freckle: '#b8704f',
-  mouth: '#b4604c',
+  mouth: '#bd6f58',
 }
 
 /*
@@ -65,7 +65,7 @@ const HEAD_FRONT = [
   '...HSBBSSBBSH...',
   '...SSSESSESsS...',
   '...sSFSSSSFss...',
-  '....SSMMMMSs....',
+  '....SSSMMSSs....', // a small, calm smile (2 px)
   '.....SSSSSs.....',
 ]
 
