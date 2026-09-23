@@ -7,6 +7,7 @@ import { UI } from '../ui/UI'
 import type { Interactable } from '../world/Interactables'
 import { TRAVEL, type TravelId } from '../world/layout'
 import { World } from '../world/World'
+import { faceCamera } from '../world/kit'
 import { CameraRig } from './CameraRig'
 import { Input } from './Input'
 import { Loop } from './Loop'
@@ -40,6 +41,13 @@ export class Experience {
   private resizeRaf = 0
   private traveling = false
   private vehicle: import('../world/Atv').Atv | null = null
+  // first-person camera
+  private fp = false
+  private fpCam = new THREE.PerspectiveCamera(72, 1, 0.05, 140)
+  private yaw = 0 // 0 = looking north (−z)
+  private look = -0.08
+  private bob = 0
+  private fpMove = { x: 0, y: 0 }
   private disposers: Array<() => void> = []
   onFatal: ((reason: string) => void) | null = null
 
@@ -69,6 +77,7 @@ export class Experience {
     if (lowPower()) this.renderer.shadowEvery = 2
     this.ui = new UI(github, {
       travel: (id) => this.travel(id),
+      toggleFirstPerson: () => this.toggleFirstPerson(),
       toggleNight: () => {
         this.world.env.toggle()
         return this.world.env.target > 0.5
@@ -117,6 +126,7 @@ export class Experience {
     this.input = new Input(document.getElementById('joystick')!, document.getElementById('knob')!, document.getElementById('btn-action')!)
     this.input.onFirstMove = () => this.ui.fadeHint()
     this.input.hotkey('KeyM', () => this.ui.toggleMap())
+    this.input.hotkey('KeyV', () => this.toggleFirstPerson())
     this.input.hotkey('KeyN', () => {
       this.world.env.toggle()
       this.ui.syncButtons()
@@ -160,6 +170,16 @@ export class Experience {
       this.ui.toast(i18n.t('contextLost'))
       lostTimer = window.setTimeout(() => this.onFatal?.('context-lost'), 4000)
     }) as EventListener)
+    // mouse look (first person): click the world to capture the mouse
+    on(this.canvas, 'click', () => {
+      if (this.fp && !document.pointerLockElement) this.lockPointer()
+    })
+    on(document, 'pointerlockchange', () => this.ui.setFirstPerson(this.fp, !!document.pointerLockElement))
+    on(document, 'mousemove', ((e: MouseEvent) => {
+      if (!this.fp || document.pointerLockElement !== this.canvas) return
+      this.yaw -= e.movementX * 0.0024
+      this.look = THREE.MathUtils.clamp(this.look - e.movementY * 0.0024, -1.25, 1.1)
+    }) as EventListener)
     on(this.canvas, 'webglcontextrestored', () => {
       clearTimeout(lostTimer)
       location.reload()
@@ -167,6 +187,41 @@ export class Experience {
   }
 
   private stopped = true
+
+  get firstPerson() {
+    return this.fp
+  }
+
+  /** Switches between the top-down pixel view and the character's own eyes. */
+  toggleFirstPerson(on = !this.fp) {
+    if (on === this.fp) return
+    this.fp = on
+    this.input.firstPerson = on
+    this.player.group.visible = !on
+    this.world.env.setFirstPerson(on)
+    if (on) {
+      // start looking the way the character faces
+      const d = this.player.dir
+      this.yaw = d === 'up' ? 0 : d === 'down' ? Math.PI : d === 'left' ? Math.PI / 2 : -Math.PI / 2
+      this.look = -0.08
+      this.lockPointer()
+    } else {
+      faceCamera(null)
+      if (document.pointerLockElement) document.exitPointerLock()
+    }
+    this.ui.setFirstPerson(on, !!document.pointerLockElement)
+    this.sfx.play('select')
+    this.resize()
+  }
+
+  private lockPointer() {
+    try {
+      const p = this.canvas.requestPointerLock() as unknown as Promise<void> | undefined
+      p?.catch?.(() => {})
+    } catch {
+      /* pointer lock unavailable (iframes, some browsers): arrows still turn */
+    }
+  }
 
   start() {
     this.stopped = false
@@ -192,6 +247,8 @@ export class Experience {
     const px = Math.max(2, Math.round(base))
     this.renderer.resize(w, h, px + Math.round(this.qualityBias * Math.max(1, px / 3)), dpr)
     this.rig.resize(this.renderer.width, this.renderer.height, TEXELS_PER_UNIT)
+    this.fpCam.aspect = this.renderer.width / this.renderer.height
+    this.fpCam.updateProjectionMatrix()
   }
 
   private mount(atv: import('../world/Atv').Atv) {
@@ -244,18 +301,31 @@ export class Experience {
     const p = this.player
     const atv = this.vehicle
 
+    // first person: input is relative to where you look, arrows turn
+    let move: { x: number; y: number } = this.input.move
+    if (this.fp) {
+      this.yaw -= this.input.turn * 2.4 * dt
+      const c = Math.cos(this.yaw)
+      const s = Math.sin(this.yaw)
+      const mx = this.input.move.x
+      const my = this.input.move.y
+      this.fpMove.x = c * mx + s * my
+      this.fpMove.y = -s * mx + c * my
+      move = this.fpMove
+    }
+
     if (atv) {
-      atv.update(dt, this.input.move, this.input.run)
+      atv.update(dt, move, this.input.run)
       p.ride(atv.seat, atv.forward, atv.body.vx, atv.body.vz)
-      this.world.update(dt, this.loop.elapsed, { x: atv.body.x, z: atv.body.z, speed: Math.abs(atv.speed), body: atv.body, riding: true })
+      this.world.update(dt, this.loop.elapsed, { x: atv.body.x, z: atv.body.z, speed: Math.abs(atv.speed), body: atv.body, riding: true }, this.fp)
       this.sfx.engine(atv.speed)
       this.near = null
       if (this.input.consumeInteract()) this.dismount()
       return
     }
 
-    this.player.update(dt, this.input.move, this.input.run)
-    this.world.update(dt, this.loop.elapsed, { x: p.body.x, z: p.body.z, speed: p.speed, body: p.body })
+    this.player.update(dt, move, this.input.run)
+    this.world.update(dt, this.loop.elapsed, { x: p.body.x, z: p.body.z, speed: p.speed, body: p.body }, this.fp)
 
     // interaction
     this.near = this.world.interact.nearest(p.body.x, p.body.z)
@@ -279,21 +349,39 @@ export class Experience {
     const p = this.player
     this.world.env.update(dt, p.position)
 
-    // camera leads the movement slightly
-    this.tmp.set(p.position.x + p.body.vx * 0.18, 0.8, p.position.z + p.body.vz * 0.18)
-    this.rig.update(this.tmp, dt)
-    this.renderer.setSubPixel(this.rig.subPixel.x, this.rig.subPixel.y)
-    this.renderer.render(this.world.scene, this.rig.camera)
+    let camera: THREE.Camera = this.rig.camera
+    if (this.fp) {
+      // eye height with a little head bob while walking
+      const speed = this.vehicle ? 0 : p.speed
+      if (speed > 0.5) this.bob += dt * speed * 2.2
+      const bobY = Math.sin(this.bob) * 0.045 * Math.min(1, speed / 4)
+      if (this.vehicle) this.fpCam.position.set(this.vehicle.seat.x, 1.75, this.vehicle.seat.z)
+      else this.fpCam.position.set(p.body.x, 1.45 + bobY, p.body.z)
+      this.fpCam.rotation.set(this.look, this.yaw, 0, 'YXZ')
+      this.fpCam.updateMatrixWorld()
+      faceCamera(this.fpCam)
+      this.renderer.setSubPixel(0, 0)
+      camera = this.fpCam
+    } else {
+      // camera leads the movement slightly
+      this.tmp.set(p.position.x + p.body.vx * 0.18, 0.8, p.position.z + p.body.vz * 0.18)
+      this.rig.update(this.tmp, dt)
+      this.renderer.setSubPixel(this.rig.subPixel.x, this.rig.subPixel.y)
+    }
+    this.renderer.render(this.world.scene, camera)
 
     // prompt bubble above the nearest interactable
     if (this.near && !this.ui.mapOpen && !(this.ui.panelOpen && this.panelSource === this.near)) {
       this.tmp.copy(this.near.position)
       this.tmp.y += this.near.height ?? 2
-      this.tmp.project(this.rig.camera)
+      this.tmp.project(camera)
       // project onto the canvas' real CSS size (it can overhang the viewport by a few px)
       const cw = this.renderer.cssWidth
       const ch = this.renderer.cssHeight
-      this.ui.setPrompt({ x: (this.tmp.x * 0.5 + 0.5) * cw, y: (-this.tmp.y * 0.5 + 0.5) * ch }, this.near.label())
+      // behind the first-person camera: pin the bubble to the bottom centre instead
+      const onScreen = this.tmp.z < 1 && Math.abs(this.tmp.x) < 1.1 && Math.abs(this.tmp.y) < 1.1
+      const pos = onScreen ? { x: (this.tmp.x * 0.5 + 0.5) * cw, y: (-this.tmp.y * 0.5 + 0.5) * ch } : { x: cw / 2, y: ch - 90 }
+      this.ui.setPrompt(pos, this.near.label())
     } else this.ui.setPrompt(null, this.vehicle ? i18n.t('dismount') : undefined)
 
     this.mapTimer += dt

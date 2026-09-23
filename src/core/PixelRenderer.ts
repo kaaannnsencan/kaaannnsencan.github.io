@@ -21,9 +21,19 @@ const compositeFrag = /* glsl */ `
   uniform vec2 subPixel;          // camera snap remainder, in low-res texels
   uniform float depthStrength;
   uniform float normalStrength;
+  uniform float perspective;      // 1 for the first-person camera
+  uniform float cameraNear;
+  uniform float cameraFar;
   varying vec2 vUv;
 
-  float depthAt(vec2 uv) { return texture2D(tDepth, uv).r; }
+  // linear 0..1 depth for both cameras (orthographic depth is already linear)
+  float depthAt(vec2 uv) {
+    float d = texture2D(tDepth, uv).r;
+    if (perspective < 0.5) return d;
+    float z = d * 2.0 - 1.0;
+    float lin = (2.0 * cameraNear * cameraFar) / (cameraFar + cameraNear - z * (cameraFar - cameraNear));
+    return (lin - cameraNear) / (cameraFar - cameraNear);
+  }
   vec3 normalAt(vec2 uv) { return texture2D(tNormal, uv).rgb * 2.0 - 1.0; }
 
   float depthEdge(vec2 uv, float d) {
@@ -32,7 +42,9 @@ const compositeFrag = /* glsl */ `
     diff += clamp(depthAt(uv + vec2(-1.0, 0.0) * resolution.zw) - d, 0.0, 1.0);
     diff += clamp(depthAt(uv + vec2( 0.0, 1.0) * resolution.zw) - d, 0.0, 1.0);
     diff += clamp(depthAt(uv + vec2( 0.0,-1.0) * resolution.zw) - d, 0.0, 1.0);
-    return floor(smoothstep(0.004, 0.008, diff) * 2.0) / 2.0;
+    // in perspective, neighbouring ground pixels drift apart with distance: scale the threshold
+    float t = 0.004 * (1.0 + d * 30.0 * perspective);
+    return floor(smoothstep(t, t * 2.0, diff) * 2.0) / 2.0;
   }
 
   float neighbourNormalEdge(vec2 uv, float d, vec3 n, vec2 o) {
@@ -127,6 +139,9 @@ export class PixelRenderer {
         subPixel: { value: new THREE.Vector2() },
         depthStrength: { value: 0.45 },
         normalStrength: { value: 0.35 },
+        perspective: { value: 0 },
+        cameraNear: { value: 1 },
+        cameraFar: { value: 140 },
       },
       vertexShader: compositeVert,
       fragmentShader: compositeFrag,
@@ -167,6 +182,11 @@ export class PixelRenderer {
 
   render(scene: THREE.Scene, camera: THREE.Camera) {
     const r = this.renderer
+    const u = this.composite.uniforms
+    const persp = (camera as THREE.PerspectiveCamera).isPerspectiveCamera === true
+    u.perspective.value = persp ? 1 : 0
+    u.cameraNear.value = (camera as THREE.PerspectiveCamera).near
+    u.cameraFar.value = (camera as THREE.PerspectiveCamera).far
     // 1. colour + depth (all layers); shadows refresh at a reduced rate on slow devices
     r.shadowMap.autoUpdate = this.frameNo++ % this.shadowEvery === 0
     camera.layers.enableAll()

@@ -12,6 +12,7 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getEleme
 
 export interface UIHooks {
   travel: (id: TravelId) => void
+  toggleFirstPerson: () => void
   toggleNight: () => boolean
   toggleSound: () => boolean
   isMuted: () => boolean
@@ -38,11 +39,15 @@ export class UI {
   private current: PanelRequest | null = null
   private toastTimer = 0
   private lastFocus: HTMLElement | null = null
+  private fpOn = false
+  private fpLocked = false
 
   constructor(private github: GithubSnapshot, private hooks: UIHooks) {
     $('panel-close').innerHTML = icon('close')
     $('map-close').innerHTML = icon('close')
     $('btn-map').innerHTML = icon('map')
+    $('btn-fp').innerHTML = icon('eye')
+    $('btn-fp').addEventListener('click', () => hooks.toggleFirstPerson())
     $('btn-classic').innerHTML = icon('page')
 
     $('deck-close').innerHTML = icon('close')
@@ -95,6 +100,9 @@ export class UI {
     $('btn-lang').setAttribute('aria-label', L === 'tr' ? 'Switch to English' : 'Türkçeye geç')
     $('btn-map').setAttribute('aria-label', i18n.t('travel'))
     $('btn-map').title = `${i18n.t('travel')} (M)`
+    $('btn-fp').setAttribute('aria-label', i18n.t('firstPerson'))
+    $('btn-fp').title = `${i18n.t('firstPerson')} (V)`
+    this.setFirstPerson(this.fpOn, this.fpLocked)
     $('btn-classic').setAttribute('aria-label', i18n.t('classic'))
     $('btn-classic').title = i18n.t('classic')
     $('panel-close').setAttribute('aria-label', i18n.t('close'))
@@ -133,6 +141,7 @@ export class UI {
   }
 
   openPanel(req: PanelRequest, sound = true) {
+    if (document.pointerLockElement) document.exitPointerLock()
     const firstOpen = this.current === null
     if (req.kind === 'cards') {
       // village chapters show as a hand of game cards instead of the side panel
@@ -175,6 +184,7 @@ export class UI {
 
   toggleMap(force?: boolean) {
     const show = force ?? this.map.hidden
+    if (show && document.pointerLockElement) document.exitPointerLock()
     this.map.hidden = !show
     if (show) {
       this.hooks.sfx('select')
@@ -200,6 +210,19 @@ export class UI {
     if (label && this.promptText.textContent !== label) this.promptText.textContent = label
     this.prompt.style.left = `${Math.round(screen.x)}px`
     this.prompt.style.top = `${Math.round(screen.y)}px`
+  }
+
+  /** First-person HUD: pressed eye button, crosshair and a short controls hint. */
+  setFirstPerson(on: boolean, locked: boolean) {
+    this.fpOn = on
+    this.fpLocked = locked
+    $('btn-fp').setAttribute('aria-pressed', String(on))
+    $('crosshair').hidden = !on
+    const hint = $('fp-hint')
+    hint.hidden = !on
+    this.hint.hidden = on
+    if (on) hint.textContent = i18n.t(locked ? 'fpLocked' : 'fpClick')
+    hint.classList.toggle('locked', locked)
   }
 
   setGameHud(text: string | null) {

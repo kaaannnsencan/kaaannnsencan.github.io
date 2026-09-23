@@ -6,7 +6,7 @@ import { LAYER_SPRITES } from '../../core/PixelRenderer'
 import type { Lot } from '../../data/city'
 import { floatingGem } from '../gem'
 import { dynamic } from '../batch'
-import { box, glowMaterial, label, PITCH, snapQuad, solid, type WorldContext } from '../kit'
+import { billboards, box, glowMaterial, label, PITCH, snapQuad, solid, type WorldContext } from '../kit'
 import { canvas2d, pixelTexture, toon } from '../materials'
 import { drawText, measure } from '../PixelFont'
 
@@ -150,6 +150,7 @@ export function buildVitrinTower(ctx: WorldContext, lot: Extract<Lot, { kind: 'p
   snapQuad(sign, canvas.width, canvas.height)
   sign.layers.set(LAYER_SPRITES)
   sign.renderOrder = 3
+  billboards.push(sign)
   ctx.scene.add(sign)
 
   // ---- red carpet, velvet ropes and spotlights out front

@@ -12,6 +12,28 @@ import { drawText, GLYPH_HEIGHT, LINE_HEIGHT, measure } from './PixelFont'
 // Shared building blocks for the zones: labels, signs, houses, fading occluders.
 
 export const PITCH = THREE.MathUtils.degToRad(40)
+
+/**
+ * Every camera-facing quad (labels, signs). In the top-down view they keep the
+ * fixed −PITCH tilt; the first-person camera turns them towards itself.
+ */
+export const billboards: THREE.Object3D[] = []
+
+const FP_SIGN_SCALE = 0.5
+
+export function faceCamera(camera: THREE.Camera | null) {
+  for (const b of billboards) {
+    // signs are sized for the top-down view; at eye level half size reads better
+    const base = (b.userData.baseScale as THREE.Vector3 | undefined) ?? (b.userData.baseScale = b.scale.clone())
+    if (camera) {
+      b.quaternion.copy(camera.quaternion)
+      b.scale.copy(base).multiplyScalar(FP_SIGN_SCALE)
+    } else {
+      b.rotation.set(-PITCH, 0, 0)
+      b.scale.copy(base)
+    }
+  }
+}
 const TPU = 16
 const UP_Y = Math.cos(PITCH)
 const UP_Z = -Math.sin(PITCH)
@@ -144,6 +166,7 @@ export class Label {
     this.mesh.rotation.x = -PITCH
     this.mesh.layers.set(LAYER_SPRITES)
     this.mesh.renderOrder = 3
+    billboards.push(this.mesh)
     this.refresh()
     i18n.onChange(() => this.refresh())
   }
@@ -155,6 +178,7 @@ export class Label {
     this.material.map = pixelTexture(canvas)
     this.material.needsUpdate = true
     this.mesh.scale.set(canvas.width / TPU, canvas.height / TPU, 1)
+    this.mesh.userData.baseScale = this.mesh.scale.clone()
     this.mesh.position.copy(this.base)
     snapQuad(this.mesh, canvas.width, canvas.height)
   }
@@ -240,9 +264,16 @@ export class Occluders {
     this.list.push({ minX, maxX, minZ, maxZ, height, materials, fade: 1 })
   }
 
-  update(px: number, pz: number, dt: number) {
+  update(px: number, pz: number, dt: number, disabled = false) {
     const reach = 1 / Math.tan(PITCH)
     for (const o of this.list) {
+      if (disabled) {
+        if (o.fade !== 1) {
+          o.fade = 1
+          for (const m of o.materials) m.opacity = 1
+        }
+        continue
+      }
       const behind =
         px > o.minX - 0.6 && px < o.maxX + 0.6 && pz < o.minZ + 0.2 && pz > o.minZ - o.height * reach - 0.5
       const inside = px > o.minX && px < o.maxX && pz > o.minZ && pz < o.maxZ

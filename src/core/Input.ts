@@ -4,6 +4,10 @@
  */
 export class Input {
   readonly move = { x: 0, y: 0 }
+  /** −1..1 yaw input from the arrow keys (first person only). */
+  turn = 0
+  /** In first person the left/right arrows turn instead of strafing. */
+  firstPerson = false
   run = false
   enabled = true
   private keys = new Set<string>()
@@ -93,8 +97,16 @@ export class Input {
     let x = 0
     let y = 0
     const k = this.keys
-    if (k.has('KeyA') || k.has('ArrowLeft')) x -= 1
-    if (k.has('KeyD') || k.has('ArrowRight')) x += 1
+    this.turn = 0
+    if (this.firstPerson) {
+      if (k.has('ArrowLeft')) this.turn -= 1
+      if (k.has('ArrowRight')) this.turn += 1
+      if (k.has('KeyA')) x -= 1
+      if (k.has('KeyD')) x += 1
+    } else {
+      if (k.has('KeyA') || k.has('ArrowLeft')) x -= 1
+      if (k.has('KeyD') || k.has('ArrowRight')) x += 1
+    }
     if (k.has('KeyW') || k.has('ArrowUp')) y -= 1
     if (k.has('KeyS') || k.has('ArrowDown')) y += 1
     this.run = k.has('ShiftLeft') || k.has('ShiftRight')

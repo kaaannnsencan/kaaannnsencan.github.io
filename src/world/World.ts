@@ -76,7 +76,7 @@ export class World {
     buildVillage(this.ctx)
     this.arena = new Arena(this.ctx, this.collision, this.particles, { ...hooks.arena, sfx: hooks.sfx })
     // one ATV on the spawn plaza, one waiting at the arena gate
-    for (const [ax, az] of [[10.5, 15.5], [52.5, 3.2]] as const) {
+    for (const [ax, az] of [[10.5, 15.5], [52, 0.5]] as const) {
       this.atvs.push(new Atv(this.ctx, this.collision, this.particles, ax, az, Math.PI / 2))
       reserved.push({ x: ax, z: az, w: 3, d: 3 })
     }
@@ -90,9 +90,9 @@ export class World {
     if (import.meta.env.DEV) console.info(`[world] static batching: ${stats.before} meshes → ${stats.after}`)
   }
 
-  update(dt: number, elapsed: number, player: { x: number; z: number; speed: number; body: import('./Collision').Body; riding?: boolean }) {
+  update(dt: number, elapsed: number, player: { x: number; z: number; speed: number; body: import('./Collision').Body; riding?: boolean }, firstPerson = false) {
     for (const a of this.ctx.animators) a(elapsed, dt)
-    this.ctx.occluders.update(player.x, player.z, dt)
+    this.ctx.occluders.update(player.x, player.z, dt, firstPerson)
     this.title.update(dt, player.x, player.z, player.speed)
     this.stadium.update(dt, player.body, elapsed)
     this.arena.update(dt, elapsed, player.body, player.riding ?? false)

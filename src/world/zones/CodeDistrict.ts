@@ -3,7 +3,7 @@ import { i18n } from '../../content/i18n'
 import type { CityPlan, Lot } from '../../data/city'
 import { colorFor } from '../../data/city'
 import { LAYER_SPRITES } from '../../core/PixelRenderer'
-import { box, label, lampPost, PITCH, signpost, snapQuad, solid, type WorldContext } from '../kit'
+import { billboards, box, label, lampPost, PITCH, signpost, snapQuad, solid, type WorldContext } from '../kit'
 import { ZONES } from '../layout'
 import { buildVitrinTower } from './Vitrin'
 import { canvas2d, pixelTexture, rng, toon, toonGradient } from '../materials'
@@ -272,6 +272,7 @@ function legend(langs: string[], x: number, z: number) {
   mesh.position.set(x, 0.4 + h / 32, z)
   snapQuad(mesh, w, h)
   mesh.layers.set(LAYER_SPRITES)
+  billboards.push(mesh)
   return mesh
 }
 

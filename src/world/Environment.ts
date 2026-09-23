@@ -10,6 +10,7 @@ export class Environment {
   readonly sun: THREE.DirectionalLight
   readonly hemi: THREE.HemisphereLight
   readonly lantern: THREE.PointLight
+  readonly fog: THREE.Fog
   night = 0
   target = 0
   private skyDay = new THREE.Color(P.waterDeep)
@@ -22,6 +23,10 @@ export class Environment {
 
   constructor(private scene: THREE.Scene, private nightMaterials: NightMaterial[], lowPower = false) {
     scene.background = this.skyDay.clone()
+    // present from the start so toggling first person never recompiles shaders;
+    // pushed out of range in the top-down view
+    this.fog = new THREE.Fog(this.skyDay.clone(), 5000, 6000)
+    scene.fog = this.fog
 
     this.hemi = new THREE.HemisphereLight('#dff3ff', '#5c7a4a', 1.4)
     scene.add(this.hemi)
@@ -53,6 +58,11 @@ export class Environment {
     this.apply()
   }
 
+  setFirstPerson(on: boolean) {
+    this.fog.near = on ? 38 : 5000
+    this.fog.far = on ? 120 : 6000
+  }
+
   toggle() {
     this.target = this.target > 0.5 ? 0 : 1
   }
@@ -75,6 +85,7 @@ export class Environment {
   private apply() {
     const n = this.night
     ;(this.scene.background as THREE.Color).copy(this.skyDay).lerp(this.skyNight, n)
+    this.fog.color.copy(this.scene.background as THREE.Color)
     this.sun.color.copy(this.sunDay).lerp(this.sunNight, n)
     this.sun.intensity = THREE.MathUtils.lerp(2.6, 0.55, n)
     this.hemi.intensity = THREE.MathUtils.lerp(1.4, 0.45, n)
