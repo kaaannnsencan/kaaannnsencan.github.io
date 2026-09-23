@@ -57,26 +57,44 @@ const hero: GameCard = {
   ],
 }
 
-const eduArt: CardArt[] = ['brush', 'chart', 'code']
-const eduRarity: Rarity[] = ['legendary', 'epic', 'rare']
-const eduColor = ['#c86bd8', '#3e6fb0', '#37c3d6']
+// card look per program (keyed by id, so reordering the CV never mismatches cards)
+const EDU: Record<string, { art: CardArt; rarity: Rarity; color: string; text: L }> = {
+  vcd: {
+    art: 'brush',
+    rarity: 'legendary',
+    color: '#c86bd8',
+    text: tl('Tipografi, kimlik, arayüz ve hareketli grafik: sitenin görsel dili buradan geliyor.', 'Typography, identity, interfaces and motion: the look of this site comes from here.'),
+  },
+  mis: {
+    art: 'chart',
+    rarity: 'epic',
+    color: '#3e6fb0',
+    text: tl('İş süreçleri, veritabanı, sistem analizi ve veri odaklı karar verme.', 'Business processes, databases, systems analysis and data-driven decisions.'),
+  },
+  se: {
+    art: 'code',
+    rarity: 'rare',
+    color: '#37c3d6',
+    text: tl('Algoritmalar, veri yapıları, nesne yönelimli programlama ve yazılım mimarisi.', 'Algorithms, data structures, object-oriented programming and software architecture.'),
+  },
+}
 
-const education: GameCard[] = profile.education.map((e, i) => ({
-  title: e.program,
-  type: tl('Eğitim · İstinye Üniversitesi', 'Education · İstinye University'),
-  art: eduArt[i] ?? 'cap',
-  rarity: eduRarity[i] ?? 'rare',
-  color: eduColor[i] ?? '#3e6fb0',
-  stats: [
-    { k: tl('Dönem', 'Period'), v: e.period },
-    { k: tl('Durum', 'Status'), v: e.detail },
-  ],
-  text: [
-    tl('Tipografi, kimlik, arayüz ve hareketli grafik: sitenin görsel dili buradan geliyor.', 'Typography, identity, interfaces and motion: the look of this site comes from here.'),
-    tl('İş süreçleri, veritabanı, sistem analizi ve veri odaklı karar verme.', 'Business processes, databases, systems analysis and data-driven decisions.'),
-    tl('Algoritmalar, veri yapıları, nesne yönelimli programlama ve yazılım mimarisi.', 'Algorithms, data structures, object-oriented programming and software architecture.'),
-  ][i] ?? e.detail,
-}))
+// same order as the CV: reverse chronological
+const education: GameCard[] = profile.education.map((e) => {
+  const look = EDU[e.id] ?? { art: 'cap' as CardArt, rarity: 'rare' as Rarity, color: '#3e6fb0', text: e.detail }
+  return {
+    title: e.program,
+    type: tl('Eğitim · İstinye Üniversitesi', 'Education · İstinye University'),
+    art: look.art,
+    rarity: look.rarity,
+    color: look.color,
+    stats: [
+      { k: tl('Dönem', 'Period'), v: e.period },
+      { k: tl('Durum', 'Status'), v: e.detail },
+    ],
+    text: look.text,
+  }
+})
 
 const career: GameCard[] = profile.experience.map((x) => ({
   title: x.title,

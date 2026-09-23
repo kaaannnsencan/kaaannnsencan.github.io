@@ -63,24 +63,28 @@ export const profile = {
     { name: { tr: 'Türkçe', en: 'Turkish' } as L, level: { tr: 'Ana dil', en: 'Native' } as L },
     { name: { tr: 'İngilizce', en: 'English' } as L, level: { tr: 'Profesyonel çalışma yetkinliği', en: 'Professional working proficiency' } as L },
   ],
+  // reverse chronological: latest (expected) graduation first
   education: [
     {
-      school: 'İstinye Üniversitesi',
-      program: { tr: 'Görsel İletişim Tasarımı', en: 'Visual Communication Design' } as L,
-      detail: { tr: '2026 Mezun', en: 'Graduated 2026' } as L,
-      period: '— 2026',
-    },
-    {
+      id: 'mis',
       school: 'İstinye Üniversitesi',
       program: { tr: 'Yönetim Bilişim Sistemleri (ÇAP)', en: 'Management Information Systems (Double Major)' } as L,
       detail: { tr: '%100 Eğitim Bursu', en: '100% Scholarship' } as L,
       period: '2024 — 2028',
     },
     {
+      id: 'se',
       school: 'İstinye Üniversitesi',
       program: { tr: 'Yazılım Mühendisliği (Yandal)', en: 'Software Engineering (Minor)' } as L,
       detail: { tr: 'Devam ediyor', en: 'In progress' } as L,
       period: '2025 — 2027',
+    },
+    {
+      id: 'vcd',
+      school: 'İstinye Üniversitesi',
+      program: { tr: 'Görsel İletişim Tasarımı', en: 'Visual Communication Design' } as L,
+      detail: { tr: '2026 Mezun', en: 'Graduated 2026' } as L,
+      period: '— 2026',
     },
   ],
   experience: [
