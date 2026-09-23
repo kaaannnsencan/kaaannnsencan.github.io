@@ -251,6 +251,7 @@ export const profile = {
         { tr: 'Karakter sprite’ları kodla, piksel piksel üretiliyor.', en: 'Character sprites are generated in code, pixel by pixel.' },
         { tr: 'GitHub repoları her derlemede otomatik olarak binaya dönüşüyor.', en: 'GitHub repos turn into buildings automatically on every build.' },
       ],
+      repo: 'kaaannnsencan.github.io',
       accent: '#c86bd8',
     },
   ] as Project[],
