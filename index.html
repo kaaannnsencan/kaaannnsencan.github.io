@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <title>Kaan Şencan — Software Developer & Designer</title>
+    <meta
+      name="description"
+      content="Muhammet Kaan Şencan — yazılım geliştirici, veri analisti ve görsel tasarımcı. Piksel bir adada yürüyerek projelerimi, GitHub repolarımı ve tasarımlarımı keşfet."
+    />
+    <meta name="theme-color" content="#2a5d9f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kaaannnsencan.github.io/" />
+    <link rel="canonical" href="https://kaaannnsencan.github.io/" />
+    <meta property="og:title" content="Kaan Şencan — Interactive Pixel Portfolio" />
+    <meta property="og:description" content="Software developer & visual designer. Walk around a pixel island to explore my work." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Muhammet Kaan Şencan",
+        "jobTitle": "Software Developer & Visual Designer",
+        "alumniOf": "İstinye Üniversitesi",
+        "email": "mailto:kaansncn30@gmail.com",
+        "sameAs": ["https://github.com/kaaannnsencan", "https://www.linkedin.com/in/kaansencann"]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app" class="app" hidden>
+      <canvas id="world" aria-label="Interactive pixel-art world" tabindex="0"></canvas>
+
+      <div id="prompt" class="prompt" hidden><kbd>E</kbd><span></span></div>
+
+      <header class="hud-top">
+        <div class="brand">
+          <strong>Kaan Şencan</strong>
+          <span id="hud-role"></span>
+        </div>
+        <nav class="hud-actions" aria-label="Controls">
+          <button class="icon-btn" id="btn-map" type="button"></button>
+          <button class="icon-btn" id="btn-night" type="button"></button>
+          <button class="icon-btn" id="btn-sound" type="button"></button>
+          <button class="icon-btn text" id="btn-lang" type="button">EN</button>
+          <button class="icon-btn" id="btn-classic" type="button"></button>
+        </nav>
+      </header>
+
+      <p id="hint" class="hint"></p>
+      <div id="game-hud" class="game-hud" role="status" aria-live="off" hidden></div>
+      <canvas id="minimap" class="minimap" width="192" height="126" aria-hidden="true"></canvas>
+
+      <div class="touch" aria-hidden="true">
+        <div class="joystick" id="joystick"><div class="knob" id="knob"></div></div>
+        <button class="action-btn" id="btn-action" type="button">E</button>
+      </div>
+
+      <aside id="panel" class="panel" role="dialog" aria-labelledby="panel-title" hidden>
+        <div class="panel-head">
+          <h2 id="panel-title"></h2>
+          <button class="icon-btn close" id="panel-close" type="button"></button>
+        </div>
+        <div class="panel-body" id="panel-body"></div>
+      </aside>
+
+      <div id="deck" class="deck" role="dialog" aria-labelledby="deck-title" hidden>
+        <div class="deck-head">
+          <div>
+            <h2 id="deck-title"></h2>
+            <p id="deck-intro"></p>
+          </div>
+          <button class="icon-btn close" id="deck-close" type="button"></button>
+        </div>
+        <div class="deck-cards" id="deck-cards"></div>
+      </div>
+
+      <div id="map" class="map" role="dialog" aria-labelledby="map-title" hidden>
+        <div class="map-inner">
+          <div class="panel-head">
+            <h2 id="map-title"></h2>
+            <button class="icon-btn close" id="map-close" type="button"></button>
+          </div>
+          <div class="map-grid">
+            <canvas id="map-canvas" width="384" height="252"></canvas>
+            <ul id="map-list" class="map-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="wipe" class="wipe"></div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <div id="loader" class="loader">
+      <div class="loader-card">
+        <div class="loader-sprite" id="loader-sprite"></div>
+        <h1>Kaan Şencan</h1>
+        <p id="loader-text">…</p>
+        <div class="bar"><div id="loader-bar"></div></div>
+        <div class="loader-actions">
+          <button id="btn-start" class="btn primary" type="button" hidden></button>
+          <button id="btn-skip" class="btn ghost" type="button"></button>
+        </div>
+      </div>
+    </div>
+
+    <main id="classic" class="classic" hidden></main>
+
+    <noscript>
+      <main class="classic">
+        <h1>Muhammet Kaan Şencan</h1>
+        <p>Software Developer · Data Analyst · Visual Designer — İstinye Üniversitesi.</p>
+        <p>
+          <a href="mailto:kaansncn30@gmail.com">kaansncn30@gmail.com</a> ·
+          <a href="https://github.com/kaaannnsencan">GitHub</a> ·
+          <a href="https://www.linkedin.com/in/kaansencann">LinkedIn</a>
+        </p>
+      </main>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

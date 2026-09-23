@@ -1,0 +1,11 @@
+node_modules
+dist
+*.log
+.DS_Store
+.snapshots
+
+# personal source files that must not be published
+# (CV contains a photo; logos are already traced/copied into src/ and public/)
+*.pdf
+/download.png
+/0b633835bc93abc72fd9d1956d6a95fd.jpg

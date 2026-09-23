@@ -1,0 +1,25 @@
+{
+  "name": "kaan-sencan-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Muhammet Kaan Şencan — interactive pixel-art portfolio world",
+  "scripts": {
+    "dev": "vite",
+    "fetch:github": "node scripts/fetch-github.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "npm run fetch:github && tsc --noEmit && vite build",
+    "build:offline": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.186.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}

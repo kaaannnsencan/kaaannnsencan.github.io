@@ -1,0 +1,556 @@
+{
+  "generatedAt": "2026-09-23T18:06:30.838Z",
+  "user": {
+    "login": "kaaannnsencan",
+    "name": null,
+    "avatarUrl": "https://avatars.githubusercontent.com/u/135762154?v=4",
+    "htmlUrl": "https://github.com/kaaannnsencan",
+    "publicRepos": 3,
+    "followers": 1,
+    "createdAt": "2023-06-06T20:56:28Z"
+  },
+  "repos": [
+    {
+      "name": "Lupin-Dizi-Jenerigi",
+      "description": null,
+      "htmlUrl": "https://github.com/kaaannnsencan/Lupin-Dizi-Jenerigi",
+      "homepage": null,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "size": 0,
+      "fork": false,
+      "archived": false,
+      "topics": [],
+      "createdAt": "2026-05-02T23:08:03Z",
+      "pushedAt": "2026-05-02T23:09:08Z"
+    },
+    {
+      "name": "Node-A-",
+      "description": "Gelişmiş döküman analizi, adım adım problem çözümü ve akademik asistanlık için tasarlandı. İstinye Üniversitesi vizeleri için en iyi çalışma partnerin.",
+      "htmlUrl": "https://github.com/kaaannnsencan/Node-A-",
+      "homepage": null,
+      "language": "HTML",
+      "stars": 0,
+      "forks": 0,
+      "size": 17,
+      "fork": false,
+      "archived": false,
+      "topics": [],
+      "createdAt": "2026-03-17T00:43:25Z",
+      "pushedAt": "2026-03-17T12:10:31Z"
+    },
+    {
+      "name": "Albiststudio",
+      "description": null,
+      "htmlUrl": "https://github.com/kaaannnsencan/Albiststudio",
+      "homepage": null,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "size": 0,
+      "fork": false,
+      "archived": false,
+      "topics": [],
+      "createdAt": "2023-06-06T20:59:20Z",
+      "pushedAt": "2023-06-06T20:59:21Z"
+    }
+  ],
+  "featured": [
+    {
+      "fullName": "serhandenizhan/vitrin-ai",
+      "name": "vitrin-ai",
+      "description": null,
+      "htmlUrl": "https://github.com/serhandenizhan/vitrin-ai",
+      "homepage": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "forks": 0,
+      "size": 8620,
+      "fork": false,
+      "archived": false,
+      "topics": [],
+      "createdAt": "2026-09-07T10:43:23Z",
+      "pushedAt": "2026-09-22T09:48:23Z"
+    }
+  ],
+  "contributions": {
+    "total": 70,
+    "weeks": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        11,
+        15,
+        12,
+        0,
+        0
+      ],
+      [
+        7,
+        0,
+        0,
+        0,
+        5,
+        4,
+        5
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ]
+    ]
+  }
+}
