@@ -22,6 +22,7 @@ export interface CharacterPalette {
   sole: string
   eye: string
   collar: string
+  brow: string
   sleeve: string
   freckle: string
   mouth: string
@@ -45,27 +46,30 @@ export const KAAN: CharacterPalette = {
   sole: '#e6dfd2',
   eye: '#2a2230',
   collar: '#2a2830',
+  brow: '#3b2219',
   sleeve: '#b7c0c7',
-  freckle: '#b8704f',
-  mouth: '#bd6f58',
+  freckle: '#d18a6a', // soft: freckles should read as texture, not spots
+  // lips only a touch darker than the skin: a relaxed, barely-there smile
+  mouth: '#b87560',
 }
 
 /*
  * Head pixel maps (16 wide, drawn from row 0). Letters:
- *   H hair · h hair highlight · S skin · s skin shade · E eye · B brow
+ *   H hair · h hair highlight · S skin · s skin shade · E eye · B/b brow (b = dark)
+ *   N nose shadow
  *   F freckle · M mouth · . empty
  */
 const HEAD_FRONT = [
-  '....H.HH.HH.H...',
-  '...HHhHHHHhHH...',
-  '..HHHHhHHhHHHH..',
-  '..HHhHHHHHHhHH..',
-  '..HHHHHSSHHHHH..',
-  '..HHSSSSSSSSHH..',
-  '...HSBBSSBBSH...',
-  '...SSSESSESsS...',
-  '...sSFSSSSFss...',
-  '....SSSMMSSs....', // a small, calm smile (2 px)
+  '....HhH.HhH.....', // curly tufts
+  '...HhHHhHHhHH...',
+  '..HHHhHHHHhHHH..',
+  '..HhHHhHHhHHhH..',
+  '..HHHhHHSHhHHH..', // middle parting
+  '..HhHHSSSSHHhH..', // locks falling either side of the forehead
+  '...HSbbSSbbSH...', // thick dark brows
+  '...sSSESSESSs...',
+  '...sSFSSSSFSs...', // light freckles (no nose pixel: it merged with the mouth)
+  '....SSSMMSSs....', // closed, neutral mouth
   '.....SSSSSs.....',
 ]
 
@@ -91,7 +95,7 @@ const HEAD_SIDE = [
   '...HHHHHHHHhHH..',
   '...HHHHHHHHHHHH.',
   '...HHhHHSSSSH...',
-  '...HHHHSSSBBS...',
+  '...HHHHSSSbbS...',
   '...HHHsSSSSES...',
   '....HHsSSSSSSS..',
   '....HHSSSSFSs...',
@@ -106,6 +110,8 @@ function paintMap(px: Px, p: CharacterPalette, map: string[], oy: number) {
     s: p.skinShade,
     E: p.eye,
     B: p.hair,
+    b: p.brow,
+    N: p.skinShade,
     F: p.freckle,
     M: p.mouth,
   }
