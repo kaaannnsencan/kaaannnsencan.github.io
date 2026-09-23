@@ -4,5 +4,6 @@
   "liveRefreshHours": 6,
   "featuredRepos": [
     "serhandenizhan/vitrin-ai"
-  ]
+  ],
+  "customSprite": false
 }

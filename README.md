@@ -87,7 +87,8 @@ Sayfa 4 sütun (yürüme kareleri) × 4 satır (aşağı, yukarı, sol, sağ):
 ```json
 { "frameWidth": 16, "frameHeight": 26, "frames": 4, "rows": { "down": 0, "up": 1, "left": 2, "right": 3 } }
 ```
-Dosya yoksa koddaki prosedürel karakter kullanılır.
+Sonra `src/content/config.json` içinde `"customSprite": true` yap. Dosya yoksa ya da ayar kapalıysa
+koddaki prosedürel karakter kullanılır.
 
 **Tasarım işleri:** görseli `public/design/` altına koy, `profile.ts` → `design` içinde ilgili
 işe `image: 'design/dosya.png'` ekle. Galerideki şövale ve panel otomatik olarak onu gösterir.

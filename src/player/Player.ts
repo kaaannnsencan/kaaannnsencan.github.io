@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import config from '../content/config.json'
 import { LAYER_SPRITES } from '../core/PixelRenderer'
 import type { CollisionWorld, Body } from '../world/Collision'
 import { snapPoint } from '../world/kit'
@@ -21,8 +22,12 @@ const DEFAULT_SPEC: SheetSpec = {
   rows: { down: 0, up: 1, left: 2, right: 3 },
 }
 
-/** Tries /sprites/player.json + player.png; falls back to the procedural sheet. */
+/**
+ * Uses /sprites/player.json + player.png when `customSprite` is on in config.json;
+ * otherwise (or if loading fails) the procedural sheet.
+ */
 export async function loadPlayerSheet(): Promise<{ image: HTMLCanvasElement | HTMLImageElement; spec: SheetSpec }> {
+  if (!config.customSprite) return { image: paintCharacterSheet(), spec: DEFAULT_SPEC }
   try {
     const base = import.meta.env.BASE_URL
     const res = await fetch(`${base}sprites/player.json`, { cache: 'no-cache' })
