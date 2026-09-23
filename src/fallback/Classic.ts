@@ -12,11 +12,15 @@ export function renderClassic(root: HTMLElement, github: GithubSnapshot, opts: {
   const draw = () => {
     const L = i18n.lang
     const tr = L === 'tr'
-    const repos = [...github.repos].filter((r) => !r.fork).sort((a, b) => Date.parse(b.pushedAt) - Date.parse(a.pushedAt))
+    // same rule as the Code District: skip forks and empty, undescribed repos
+    const repos = [...github.repos]
+      .filter((r) => !r.fork && (r.size > 0 || r.description))
+      .sort((a, b) => Date.parse(b.pushedAt) - Date.parse(a.pushedAt))
     root.innerHTML = `
       <div class="classic-bar">
         <strong>Kaan Şencan</strong>
         <div class="group">
+          <button class="btn" data-print type="button">${esc(i18n.t('print'))}</button>
           <button class="btn" data-lang type="button">${tr ? 'EN' : 'TR'}</button>
           ${opts.canReturn ? `<button class="btn primary" data-return type="button">${esc(i18n.t('world'))}</button>` : ''}
         </div>
@@ -61,7 +65,7 @@ export function renderClassic(root: HTMLElement, github: GithubSnapshot, opts: {
 
       ${
         repos.length
-          ? `<section style="--accent:#39d353">
+          ? `<section class="no-print" style="--accent:#39d353">
         <h2>GitHub</h2>
         <div class="cards">
           ${repos
@@ -107,6 +111,7 @@ export function renderClassic(root: HTMLElement, github: GithubSnapshot, opts: {
         <p>${profile.languages.map((l) => `<b>${esc(l.name[L])}</b> — ${esc(l.level[L])}`).join('<br>')}</p>
       </section>`
     root.querySelector('[data-lang]')?.addEventListener('click', () => i18n.set(i18n.lang === 'tr' ? 'en' : 'tr'))
+    root.querySelector('[data-print]')?.addEventListener('click', () => window.print())
     root.querySelector('[data-return]')?.addEventListener('click', opts.onReturn)
   }
   draw()

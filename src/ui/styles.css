@@ -1332,3 +1332,106 @@ button {
     display: none;
   }
 }
+
+/* ------------------------------------------------------------ print: the quick summary becomes a clean CV */
+
+.seo-summary {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    font-size: 10pt;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .classic h2 {
+    font-size: 15pt;
+    margin: 0 0 6px;
+  }
+  .card {
+    padding: 8px 10px;
+  }
+  .card h3 {
+    font-size: 11pt;
+    margin-bottom: 4px;
+  }
+  .card p,
+  .card li,
+  .timeline .item {
+    font-size: 9.5pt;
+    margin-bottom: 4px;
+  }
+  .chips {
+    margin: 4px 0 6px;
+    gap: 4px;
+  }
+  .chip {
+    font-size: 8pt;
+    padding: 1px 5px;
+  }
+  .classic-hero p {
+    font-size: 12pt;
+  }
+  .app,
+  .loader,
+  .classic-bar {
+    display: none !important;
+  }
+  .classic {
+    background: #fff;
+    padding: 0;
+  }
+  .classic-hero {
+    background: #fff;
+    color: #000;
+    padding: 0 0 12px;
+    border-bottom: 2px solid #000;
+  }
+  .classic-hero h1 {
+    color: #000;
+    text-shadow: none;
+    font-size: 28pt;
+  }
+  .classic-hero .btn {
+    box-shadow: none;
+    padding: 0;
+    background: none;
+    color: #000;
+    clip-path: none;
+    font-size: 10pt;
+  }
+  .classic section {
+    padding: 10px 0 0;
+  }
+  .classic h2 {
+    break-after: avoid;
+  }
+  .cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .card {
+    box-shadow: inset 0 0 0 1px #000;
+    break-inside: avoid;
+  }
+  .card .brand-logo {
+    display: none;
+  }
+  .chip {
+    box-shadow: inset 0 0 0 1px #555;
+    background: none;
+  }
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+}

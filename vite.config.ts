@@ -2,6 +2,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
+import { metaDescription, renderStaticSummary } from './src/fallback/staticHtml'
 
 // Dev-only: lets automated checks POST a canvas snapshot (data URL) to disk.
 const snapshots = (): Plugin => ({
@@ -22,10 +23,21 @@ const snapshots = (): Plugin => ({
   },
 })
 
+// Puts the CV summary into index.html so crawlers and link previews get real
+// text without running JavaScript. Source of truth stays src/content/profile.ts.
+const seoSummary = (): Plugin => ({
+  name: 'seo-summary',
+  transformIndexHtml(html) {
+    return html
+      .replaceAll('<!--SEO_SUMMARY-->', renderStaticSummary('tr'))
+      .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/, `$1${metaDescription('tr').replace(/"/g, '&quot;')}$2`)
+  },
+})
+
 // BASE_PATH lets the same build run on a custom domain ("/") or GitHub Pages ("/repo-name/").
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
-  plugins: [snapshots()],
+  plugins: [snapshots(), seoSummary()],
   build: {
     target: 'es2022',
     sourcemap: false,
