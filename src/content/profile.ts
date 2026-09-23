@@ -41,6 +41,8 @@ export interface DesignWork {
 export const profile = {
   name: 'Muhammet Kaan Şencan',
   shortName: 'Kaan Şencan',
+  /** Kaan's own pixel-art portrait (public/). */
+  portrait: 'brand/kaan-pixel.jpg',
   role: {
     tr: 'Yazılım Geliştirici · Veri Analisti · Görsel Tasarımcı',
     en: 'Software Developer · Data Analyst · Visual Designer',

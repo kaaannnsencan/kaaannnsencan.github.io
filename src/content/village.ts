@@ -4,7 +4,7 @@
 import { profile, type L } from './profile'
 
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary'
-export type CardArt = 'hero' | 'cap' | 'brush' | 'chart' | 'code' | 'briefcase' | 'speech' | 'gem' | 'brain' | 'gear' | 'scroll' | 'flagTr' | 'flagEn'
+export type CardArt = 'portrait' | 'hero' | 'cap' | 'brush' | 'chart' | 'code' | 'briefcase' | 'speech' | 'gem' | 'brain' | 'gear' | 'scroll' | 'flagTr' | 'flagEn'
 
 export interface GameCard {
   title: L | string
@@ -39,7 +39,7 @@ const tl = (tr: string, en: string): L => ({ tr, en })
 const hero: GameCard = {
   title: profile.shortName,
   type: tl('Kahraman · Hibrit Sınıf', 'Hero · Hybrid Class'),
-  art: 'hero',
+  art: 'portrait',
   rarity: 'legendary',
   color: '#f2c14e',
   stats: [

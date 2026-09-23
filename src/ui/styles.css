@@ -540,8 +540,10 @@ button {
 
 .stat b {
   display: block;
-  font-family: var(--font-head);
-  font-size: 26px;
+  /* VT323 digits stay legible; the heading font's 3/5 read like 8 */
+  font-family: var(--font-body);
+  font-size: 34px;
+  line-height: 1;
   color: var(--gold);
 }
 
@@ -605,6 +607,41 @@ button {
 .card .brand-logo {
   padding: 14px;
   margin: -4px 0 12px;
+}
+
+.about-portrait {
+  float: right;
+  width: 112px;
+  margin: 0 0 10px 14px;
+  box-shadow: 0 0 0 3px var(--ink), 4px 4px 0 3px var(--accent, var(--gold));
+}
+
+.about-portrait img,
+.classic-portrait {
+  display: block;
+  width: 100%;
+  image-rendering: pixelated;
+}
+
+.classic-portrait {
+  width: 120px;
+  margin-bottom: 18px;
+  box-shadow: 0 0 0 4px var(--ink), 6px 6px 0 4px var(--gold);
+}
+
+.gcard-art.portrait {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gcard-art.portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  image-rendering: auto;
 }
 
 .poster-view {
@@ -1424,6 +1461,9 @@ button {
     break-inside: avoid;
   }
   .card .brand-logo {
+    display: none;
+  }
+  .classic-portrait {
     display: none;
   }
   .chip {

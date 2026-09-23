@@ -75,6 +75,7 @@ export function renderPanel(req: PanelRequest, github: GithubSnapshot): PanelVie
         title: profile.name,
         accent: '#ff8a5c',
         html: `
+          <div class="about-portrait"><img src="${esc(import.meta.env.BASE_URL + profile.portrait)}" alt="${esc(profile.name)}" /></div>
           <p><b>${esc(profile.role[L])}</b></p>
           <div class="stats">
             <div class="stat"><b>3</b>${tr ? 'program' : 'programs'}</div>

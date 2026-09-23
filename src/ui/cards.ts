@@ -1,11 +1,11 @@
 import { i18n } from '../content/i18n'
-import type { L } from '../content/profile'
+import { profile, type L } from '../content/profile'
 import { CHAPTERS, type CardArt, type Chapter, type GameCard, type Rarity } from '../content/village'
 import { FRAME_H, FRAME_W, paintCharacterSheet } from '../player/SpriteFactory'
 import { esc } from './panels'
 
 // 12×12 pixel card art. Letters index into the palette below.
-const ART: Record<Exclude<CardArt, 'hero'>, string[]> = {
+const ART: Record<Exclude<CardArt, 'hero' | 'portrait'>, string[]> = {
   cap: ['............', '.....kk.....', '...kkkkkk...', '.kkkkkkkkkk.', 'kkkkkkkkkkkk', '..kkkkkkkky.', '..kkkkkkk.y.', '..kkkkkkk.y.', '...kkkkk..yy', '............', '............', '............'],
   brush: ['.........kk.', '........kkk.', '.......kkk..', '......kkk...', '.....kkk....', '....yyk.....', '...yyy......', '..mmyy......', '.mmmm.......', '.mmm........', 'mm..........', '............'],
   chart: ['............', '.........gg.', '.........gg.', '......cc.gg.', '......cc.gg.', '...yy.cc.gg.', '...yy.cc.gg.', 'm..yy.cc.gg.', 'm..yy.cc.gg.', 'kkkkkkkkkkkk', '............', '............'],
@@ -30,6 +30,7 @@ const artCache = new Map<CardArt, string>()
 function artUrl(art: CardArt): string {
   const hit = artCache.get(art)
   if (hit) return hit
+  if (art === 'portrait') return import.meta.env.BASE_URL + profile.portrait
   const c = document.createElement('canvas')
   const g = c.getContext('2d')!
   if (art === 'hero') {
@@ -88,7 +89,7 @@ function cardHtml(card: GameCard, i: number) {
   return `
     <article class="gcard r-${card.rarity}" style="--c:${esc(card.color)};--i:${i}">
       <header><h3>${esc(pick(card.title))}</h3></header>
-      <div class="gcard-art"><img src="${artUrl(card.art)}" alt="" decoding="async" /></div>
+      <div class="gcard-art${card.art === 'portrait' ? ' portrait' : ''}"><img src="${artUrl(card.art)}" alt="" decoding="async" /></div>
       <div class="gcard-type"><span>${esc(pick(card.type))}</span><span class="gem" title="${esc(pick(RARITY[card.rarity]))}"></span></div>
       <div class="gcard-text">
         <p>${esc(pick(card.text))}</p>

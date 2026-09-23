@@ -28,6 +28,7 @@ export function renderClassic(root: HTMLElement, github: GithubSnapshot, opts: {
       <header class="classic-hero">
         <div class="wrap">
           ${opts.notice ? `<p class="chip" style="display:inline-block;color:#1a1420">${esc(opts.notice)}</p>` : ''}
+          <img class="classic-portrait" src="${esc(import.meta.env.BASE_URL + profile.portrait)}" alt="${esc(profile.name)}" />
           <h1>${esc(profile.name)}</h1>
           <p>${esc(profile.role[L])}</p>
           <p style="opacity:.85">${esc(profile.tagline[L])}</p>

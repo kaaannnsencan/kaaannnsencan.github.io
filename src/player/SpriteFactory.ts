@@ -21,22 +21,100 @@ export interface CharacterPalette {
   shoes: string
   sole: string
   eye: string
+  collar: string
+  sleeve: string
+  freckle: string
+  mouth: string
 }
 
-/** Palette taken from Kaan's photo: dark-brown short hair, black tee, dark jeans. */
+/**
+ * Palette taken from Kaan's own pixel portrait: wavy middle-parted brown hair,
+ * warm skin with freckles, light tee with a black crew neck.
+ */
 export const KAAN: CharacterPalette = {
   outline: '#1a1420',
-  skin: '#f2c6a5',
-  skinShade: '#d69d7c',
-  hair: '#3a2820',
-  hairHi: '#5e4331',
-  shirt: '#24232c',
-  shirtHi: '#3d3c4c',
+  skin: '#e6a882',
+  skinShade: '#c98567',
+  hair: '#6b3f2a',
+  hairHi: '#9a6440',
+  shirt: '#dfe4e7',
+  shirtHi: '#f8f9fa',
   pants: '#34426a',
   pantsShade: '#26304f',
   shoes: '#18141c',
   sole: '#e6dfd2',
-  eye: '#1a1420',
+  eye: '#2a2230',
+  collar: '#2a2830',
+  sleeve: '#b7c0c7',
+  freckle: '#b8704f',
+  mouth: '#b4604c',
+}
+
+/*
+ * Head pixel maps (16 wide, drawn from row 0). Letters:
+ *   H hair · h hair highlight · S skin · s skin shade · E eye · B brow
+ *   F freckle · M mouth · . empty
+ */
+const HEAD_FRONT = [
+  '....H.HH.HH.H...',
+  '...HHhHHHHhHH...',
+  '..HHHHhHHhHHHH..',
+  '..HHhHHHHHHhHH..',
+  '..HHHHHSSHHHHH..',
+  '..HHSSSSSSSSHH..',
+  '...HSBBSSBBSH...',
+  '...SSSESSESsS...',
+  '...sSFSSSSFss...',
+  '....SSMMMMSs....',
+  '.....SSSSSs.....',
+]
+
+const HEAD_BACK = [
+  '....H.HH.HH.H...',
+  '...HHhHHHHhHH...',
+  '..HHHHhHHhHHHH..',
+  '..HHhHHHHHHhHH..',
+  '..HHHHHHHHHHHH..',
+  '..HHHHhHHhHHHH..',
+  '...HHHHHHHHHH...',
+  '...sHHhHHhHHs...',
+  '...sHHHHHHHHs...',
+  '....HHHHHHHH....',
+  '.....sSSSSs.....',
+]
+
+// facing right: 1-pixel nose on row 8, mouth on row 10
+const HEAD_SIDE = [
+  '.....H.HH.H.....',
+  '....HHhHHhHH....',
+  '...HHHhHHHHHH...',
+  '...HHHHHHHHhHH..',
+  '...HHHHHHHHHHHH.',
+  '...HHhHHSSSSH...',
+  '...HHHHSSSBBS...',
+  '...HHHsSSSSES...',
+  '....HHsSSSSSSS..',
+  '....HHSSSSFSs...',
+  '.....sSSSSMs....',
+]
+
+function paintMap(px: Px, p: CharacterPalette, map: string[], oy: number) {
+  const colors: Record<string, string> = {
+    H: p.hair,
+    h: p.hairHi,
+    S: p.skin,
+    s: p.skinShade,
+    E: p.eye,
+    B: p.hair,
+    F: p.freckle,
+    M: p.mouth,
+  }
+  map.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const c = colors[row[x]]
+      if (c) px(x, oy + y, c)
+    }
+  })
 }
 
 type Px = (x: number, y: number, c: string) => void
@@ -67,52 +145,26 @@ function paintFront(px: Px, p: CharacterPalette, frame: number, back: boolean) {
   // torso
   rect(px, 4, y(11), 11, y(17), p.shirt)
   rect(px, 5, y(13), 6, y(16), p.shirtHi)
-  if (!back) {
-    rect(px, 6, y(11), 9, y(11), p.skinShade)
-    rect(px, 7, y(12), 8, y(12), p.skinShade)
-  } else rect(px, 6, y(11), 9, y(11), p.skinShade)
+  rect(px, 6, y(11), 9, y(11), p.skinShade)
 
   // arms swing opposite to legs
   // (in a front view a swinging arm just looks longer or shorter)
   const aL = lStep ? -1 : rStep ? 1 : 0
   const aR = -aL
-  rect(px, 3, y(11), 3, y(13), p.shirt)
+  rect(px, 3, y(11), 3, y(13), p.sleeve)
   rect(px, 3, y(14), 3, y(15 + aL), p.skin)
-  rect(px, 12, y(11), 12, y(13), p.shirt)
-  rect(px, 12, y(14), 12, y(15 + aR), p.skin)
+  rect(px, 12, y(11), 12, y(13), p.sleeve)
+  rect(px, 12, y(14), 12, y(15 + aR), p.skinShade)
 
-  // head
-  rect(px, 4, y(3), 11, y(10), p.skin)
-  rect(px, 11, y(5), 11, y(10), p.skinShade)
-  px(3, y(7), p.skin)
-  px(3, y(8), p.skinShade)
-  px(12, y(7), p.skinShade)
-  px(12, y(8), p.skinShade)
+  // head (pixel map, bobs with the body)
+  paintMap(px, p, back ? HEAD_BACK : HEAD_FRONT, bob)
 
-  // hair
-  rect(px, 5, y(0), 10, y(0), p.hair)
-  rect(px, 4, y(1), 11, y(3), p.hair)
-  rect(px, 6, y(1), 8, y(1), p.hairHi)
-  rect(px, 5, y(2), 6, y(2), p.hairHi)
-  if (back) {
-    rect(px, 4, y(4), 11, y(9), p.hair)
-    rect(px, 5, y(10), 10, y(10), p.hair)
-    rect(px, 6, y(4), 7, y(5), p.hairHi)
-  } else {
-    // fringe swept to one side + sideburns
-    rect(px, 4, y(4), 7, y(4), p.hair)
-    px(10, y(4), p.hair)
-    px(11, y(4), p.hair)
-    rect(px, 4, y(5), 4, y(6), p.hair)
-    px(11, y(5), p.hair)
-    // brows, eyes, mouth
-    rect(px, 5, y(6), 6, y(6), p.hairHi)
-    rect(px, 9, y(6), 10, y(6), p.hairHi)
-    px(6, y(7), p.eye)
-    px(9, y(7), p.eye)
-    px(6, y(8), p.skin)
-    rect(px, 7, y(9), 8, y(9), p.skinShade)
-  }
+  // black crew neck like in the portrait
+  if (!back) {
+    px(5, y(11), p.collar)
+    px(10, y(11), p.collar)
+    rect(px, 6, y(12), 9, y(12), p.collar)
+  } else rect(px, 5, y(11), 10, y(11), p.collar)
 }
 
 function paintSide(px: Px, p: CharacterPalette, frame: number) {
@@ -144,30 +196,15 @@ function paintSide(px: Px, p: CharacterPalette, frame: number) {
   rect(px, 9, y(12), 10, y(16), p.shirtHi)
   rect(px, 8, y(11), 9, y(11), p.skinShade)
 
-  // arm swings forward/back
+  // arm swings forward/back: grey sleeve, then a shaded forearm so it reads on a light tee
   const ax = 7 + stride
-  rect(px, ax, y(12), ax + 1, y(14), p.shirtHi)
-  rect(px, ax, y(15), ax + 1, y(16), p.skin)
+  rect(px, ax, y(12), ax + 1, y(13), p.sleeve)
+  rect(px, ax, y(14), ax, y(16), p.skinShade)
+  rect(px, ax + 1, y(14), ax + 1, y(16), p.skin)
 
-  // head
-  rect(px, 5, y(3), 11, y(10), p.skin)
-  px(12, y(7), p.skin)
-  px(12, y(8), p.skinShade)
-  rect(px, 5, y(9), 6, y(10), p.skinShade)
-  // hair: back of head and top
-  rect(px, 5, y(0), 10, y(0), p.hair)
-  rect(px, 4, y(1), 11, y(3), p.hair)
-  rect(px, 4, y(4), 7, y(8), p.hair)
-  px(11, y(4), p.hair)
-  px(10, y(4), p.hair)
-  rect(px, 6, y(1), 9, y(1), p.hairHi)
-  rect(px, 5, y(2), 6, y(4), p.hairHi)
-  // ear, eye, brow
-  px(7, y(7), p.skinShade)
-  px(7, y(8), p.skinShade)
-  px(10, y(6), p.hairHi)
-  px(10, y(7), p.eye)
-  px(11, y(9), p.skinShade)
+  // head (pixel map) + collar
+  paintMap(px, p, HEAD_SIDE, bob)
+  rect(px, 7, y(11), 10, y(11), p.collar)
 }
 
 function outline(img: ImageData, color: string) {
